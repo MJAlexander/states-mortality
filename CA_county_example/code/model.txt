@@ -1,0 +1,95 @@
+## pooled LC-type model with 1-3 PCs
+## smoothing parameters through time with non-informative priors
+model{
+  for (x in 1:X){ #age
+    for (t in 1:T){ #time
+      for (s in 1:S){ #state
+        for (a in 1:n.a[s]){ #counties within state
+          y.xtas[x,t,a,s] ~ dpois(mu.xtas[x,t,a,s]) #deaths are poisson distributed
+          yrep.xtas[x,t,a,s] ~ dpois(mu.xtas[x,t,a,s]) #draws from posterior predictive distribution (to construct PIs)
+          mu.xtas[x,t,a, s] <- pop.xtas[x,t,a, s]*mx.xtas[x,t,a, s] # pop x mortality rate
+          mx.xtas[x,t,a,s] <- exp(logmx.xtas[x,t,a,s])
+        }
+        for (a in n.a[s]+1:n.amax){ #this is required when states have different number of counties (nothing estimated, just getting rid of errors)
+          mu.xtas[x,t,a, s] <- 0
+        }
+      }
+    }
+  }
+  
+  for (x in 1:X){ #age
+    for (t in 1:T){
+      for (s in 1:S){
+        for (a in 1:n.a[s]){
+          logmx.xtas[x,t,a,s]<- beta.tas[t,a,s,1]*Yx[x,1] + beta.tas[t,a,s,2]*Yx[x,2] + beta.tas[t,a,s,3]*Yx[x,3] +u.xtas[x,t,a,s]
+        }
+      }
+    }
+  }
+  
+  #priors
+  for (s in 1:S){
+      for (a in 1:n.a[s]){
+        for(p in 1:P){
+          for(t in 1:T){
+            beta.tas[t,a,s,p] ~ dnorm(mu.beta[s,t,p], tau.beta[s,t,p])
+          }
+        }
+      }
+      for(t in 1:T){
+      for (a in n.a[s]+1:n.amax){
+        for(p in 1:P){
+          beta.tas[t,a,s,p] <- 0
+        }
+      }
+      
+      for(p in 1:P){
+        tau.beta[s,t,p] <- pow(sigma.beta[s,t,p], -2)
+        sigma.beta[s,t,p] ~ dunif(0,40)
+        
+      }
+      }
+      
+
+  }
+  
+  for(s in 1:S){
+
+      for (a in 1:n.a[s]){
+        for(x in 1:X){
+        for(t in 1:T){
+          u.xtas[x,t,a,s] ~ dnorm(0, tau.u[x,s])
+        }
+        
+      }
+  }
+    
+    for(t in 1:2){
+      
+      for(p in 1:P){
+        mu.beta[s,t,p] ~ dnorm(0, tau.mu[s,p])
+      }
+      
+      
+    }
+    for(t in 3:(T)){
+      
+      for(p in 1:P){
+        mu.beta[s,t,p] ~ dnorm(2*mu.beta[s,t-1,p] - mu.beta[s,t-2,p], tau.mu[s,p])
+      }
+      
+    }
+    
+    for(p in 1:P){
+      tau.mu[s,p] <- pow(sigma.mu[s,p], -2)
+      sigma.mu[s,p] ~ dunif(0,40)
+    }
+    
+      for(x in 1:X){
+        tau.u[x,s] <- pow(sigma.u[x,s], -2)
+        sigma.u[x,s] ~ dunif(0,0.1)
+      }
+  }
+  
+  
+}
