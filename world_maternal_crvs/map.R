@@ -24,7 +24,7 @@ mmr <- mmr %>%
 
 # CRVS coverage data (source: https://unstats.un.org/unsd/demographic-social/crvs/index.cshtml)
 
-cov <- read_xls("~/Downloads/Website_final_coverage.xls", skip = 2)
+cov <- read_xls("data//Website_final_coverage.xls", skip = 2)
 
 # clean up and recategorize
 cov <- cov %>% 
