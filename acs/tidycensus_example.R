@@ -70,4 +70,4 @@ mainland_acs = subset(acs_vars, (substr(acs_vars$county_id, 1, 2) %in% state_cod
 
 # 3. Save dataset ---------------------------------------------------------------------------------
 
-saveRDS(mainland_acs, here("harmonized_acs_2011_2017.RDS"))
+write_csv(mainland_acs, here("harmonized_acs_2011_2017.csv"))
