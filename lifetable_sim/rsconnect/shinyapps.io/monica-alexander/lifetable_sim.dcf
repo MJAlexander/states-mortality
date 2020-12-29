@@ -1,0 +1,12 @@
+name: lifetable_sim
+title: lifetable_sim
+username:
+account: monica-alexander
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 3433159
+bundleId: 4036630
+url: https://monica-alexander.shinyapps.io/lifetable_sim/
+when: 1609192208.62873
+asMultiple: FALSE
+asStatic: FALSE
