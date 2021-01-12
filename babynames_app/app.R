@@ -7,17 +7,30 @@ library(babynames)
 library(utf8)
 
 # ontario data
-d <- read_csv("ontario_top_baby_names_male_1917-2018_en_fr.csv")
+dm <- read_csv("ontario_top_baby_names_male_1917-2018_en_fr.csv")
+df <- read_csv("ontario_top_baby_names_female_1917-2018_en_fr.csv")
 
 # tidy up data
 
-d <- d %>% janitor::clean_names() %>% 
+dm <- dm %>% janitor::clean_names() %>% 
   rename(name = name_nom, year = year_annee, frequency = frequency_frequence) %>% 
   mutate(name = str_to_title(name)) %>% 
   group_by(year) %>% 
   mutate(prop = frequency/sum(frequency)) %>% 
   filter(year>1989) %>% 
-  mutate_if(is.character, utf8_encode)
+  mutate_if(is.character, utf8_encode) %>% 
+  mutate(sex = "Male") 
+
+df <- df %>% janitor::clean_names() %>% 
+  rename(name = name_nom, year = year_annee, frequency = frequency_frequence) %>% 
+  mutate(name = str_to_title(name)) %>% 
+  group_by(year) %>% 
+  mutate(prop = frequency/sum(frequency)) %>% 
+  filter(year>1989) %>% 
+  mutate_if(is.character, utf8_encode) %>% 
+  mutate(sex = "Female") 
+
+d <- bind_rows(dm, df)
 
 ozbabynames <- ozbabynames %>% 
   group_by(name, sex, year) %>% 
@@ -48,7 +61,7 @@ ui <- dashboardPage(
   dashboardSidebar(
     sidebarMenu(
       menuItem("Trends", tabName = "Trends", icon = icon("th")),
-      menuItem("Top Names", tabName = "Top", icon = icon("th")),
+      menuItem("Top Names", tabName = "Top", icon = icon("users")),
       menuItem("About", tabName = "About", icon = icon("info"))
     )
   ),
@@ -87,7 +100,7 @@ ui <- dashboardPage(
               fluidRow(
                 box(
                   width = 10, solidHeader = FALSE, status = "primary",
-                  "Select year, gender, and geography below to show most popular names. Note: Ontario is for males only. "
+                  "Select year, gender, and geography below to show most popular names. "
                 )),
               sidebarLayout(
                 sidebarPanel(
@@ -123,9 +136,9 @@ ui <- dashboardPage(
                        '<br/>', '<br/>', "Australia data is from the ozbabynames package: https://github.com/ropenscilabs/ozbabynames",
                        '<br/>', '<br/>', "USA data is from the babynames package: https://cran.r-project.org/web/packages/babynames/index.html",
                        '<br/>', '<br/>', "Ontario data is from: https://data.ontario.ca/dataset/ontario-top-baby-names-male",
-                       '<br/>', '<br/>', "Code to make app is here: https://github.com/MJAlexander/states-mortality",
+                       '<br/>', '<br/>', "Code to make app is here: https://github.com/MJAlexander/states-mortality/tree/master/babynames_app",
                        '<br/>', '<br/>', "Unfortunately data are only available up to 2017 (2018 in Ontario case). You can find top name lists for more recent years elsewhere on the internet. I will incorporate them at some point.",
-                       '<br/>', '<br/>', "Note the Ontario data is for males only because I haven't got around to downloading female data. Also note that the Australia data seems dodgey in parts.")
+                       '<br/>', '<br/>', "Note that the Australia data seems dodgey in parts.")
                 )))
     )
   )
@@ -140,7 +153,7 @@ server = function(input, output) {
         ggtitle("USA popularity")+
         ylab("Percent of total births") + 
         theme_bw(base_size = 16)+
-        scale_color_brewer(palette = "Set1")
+        scale_color_viridis_d()
       p1
     }
     else{if(input$place=="Australia"){
@@ -150,18 +163,18 @@ server = function(input, output) {
         ggtitle("Australian popularity")+
         ylab("Percent of total births") + 
         theme_bw(base_size = 16)+
-        scale_color_brewer(palette = "Set1")
+        scale_color_viridis_d()
       p1
     }
       
       else{
         p1 <- d %>% 
           filter(name %in% input$name) %>% 
-          ggplot(aes(year, prop*100, color = name)) + geom_line(lwd = 1.3) + 
+          ggplot(aes(year, prop*100, color = name, lty = sex)) + geom_line(lwd = 1.3) + 
           ggtitle("Ontario popularity")+
           ylab("Percent of total births") + 
           theme_bw(base_size = 16)+
-          scale_color_brewer(palette = "Set1")
+          scale_color_viridis_d()
         p1
       }
       }
@@ -192,7 +205,7 @@ server = function(input, output) {
       
       else{
         d %>% 
-          filter(year == input$year) %>% 
+          filter(year == input$year, sex == input$sex) %>% 
           arrange(-prop) %>% 
           mutate(percent = prop*100) %>% 
           select(name, percent) %>% 
