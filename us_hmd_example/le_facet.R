@@ -17,7 +17,7 @@ lt_female <- c()
 for(i in 1:length(states)){
   folder_path <- paste0("./lifetables/States/",states[i])
   state_male <- read_csv(paste0(folder_path, "/", states[i], "_mltper_1x1.csv"))
-  state_female <- read_csv(paste0(folder_path, "/", states[i], "_fltper_1x1.csv"))
+  state_female <- read_csv(paste0(folder_path, "/", states[i], "_fltper_1x1.csv"), col_types = cols(Sex = col_character()))
   
   lt_male <- rbind(lt_male, state_male)
   lt_female <- rbind(lt_female, state_female)

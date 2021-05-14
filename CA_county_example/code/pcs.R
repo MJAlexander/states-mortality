@@ -6,6 +6,8 @@
 # data are available here: https://usa.mortality.org/
 # download the lifetable zipped file
 
+library(tidyverse)
+
 states <- list.files("./data/lifetables/States") # does not exist on github! need to download
 lt <- c()
 
@@ -17,6 +19,14 @@ for(i in 1:length(states)){
   
   rm(state_both)
 }
+
+age_levels <- c(0, 1, seq(5, 25, by = 5), seq(35,85, by = 10), 110)
+age_labels <- c("<1", "1-4 years", "5-9 years", "10-14 years",
+                "15-19 years", "20-24 years", 
+                "25-34 years", "35-44 years", 
+                "45-54 years", "55-64 years", 
+                "65-74 years", "75-84 years", 
+                "85+")
 
 
 lt_group <- lt %>% 
