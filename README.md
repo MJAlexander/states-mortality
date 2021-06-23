@@ -3,8 +3,10 @@
 This repository contains code of various examples related to mortality and Bayesian models. It started out just US mortality examples but now is just a dumping ground for all sorts of stuff. 
 
 - `acs` ACS related, currently just a `tidycensus` example
+- `babynamesapp` code for baby names shiny app: https://monica-alexander.shinyapps.io/babynames_app/
 - `birthweight_bayes_viz` code related to the Bayes Viz blog post. 
 - `CA_county_example` contains code to fit a subnational mortality model to estimate age-specific death rates in california over 1999-2016. 
+- `letters`: An E and H made with ggplot and generative art.
 - `lifspan_variation` looks at standard deviation in age at death across US states
 - `lifetable_sim` code for this Shiny app: https://monica-alexander.shinyapps.io/lifetable_sim/
 - `stata_labels` R code to parse Stata label definitions
