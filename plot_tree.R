@@ -128,7 +128,7 @@ p <- ggplot(data = d) +
                              xmax = x_right, 
                              ymin = y_low, 
                              ymax = y_up), 
-            fill = "red") + # red color underneath
+            fill = "red", alpha = 0.4) + # red color underneath
   geom_rect(data = base, aes(xmin = x_left, 
                              xmax = x_right, 
                              ymin = y_low, 
