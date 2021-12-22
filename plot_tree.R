@@ -128,7 +128,7 @@ p <- ggplot(data = d) +
                              xmax = x_right, 
                              ymin = y_low, 
                              ymax = y_up), 
-            fill = "red", alpha = 0.4) + # red color underneath
+            fill = "red", alpha = 0.5) + # red color underneath
   geom_rect(data = base, aes(xmin = x_left, 
                              xmax = x_right, 
                              ymin = y_low, 
@@ -140,3 +140,4 @@ p +
   theme_void()  + 
   scale_fill_manual(values = commit_colors$color) + 
   theme(legend.position = "none")
+
