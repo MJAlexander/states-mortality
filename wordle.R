@@ -29,7 +29,8 @@ p1 <- wordles %>%
   geom_line(color = "#32a852", lwd = 1.2) + 
   geom_point(color = "#32a852", size = 2) + 
   labs(title = "People tweeting about Wordle",
-       x = "number of tweets") + 
+       x = "date",
+       y = "number") + 
   theme_bw()
 
 
@@ -41,7 +42,7 @@ p2 <- wordles %>%
   ggplot(aes(date, mean_tries)) + 
   geom_line(color = "#32a852", lwd = 1.2) + 
   geom_point(color = "#32a852", size = 2) +
-  labs(title = "Mean number of tries required",
+  labs(title = "Mean number of tries to get answer",
        y = "mean",
        caption = "Based on Wordle tweets from @monjalexander's following and followers") + 
   theme_bw()
@@ -90,7 +91,7 @@ prop_positive_by_tries <- tidy_tweets %>%
 prop_positive_by_tries %>% 
   ggplot(aes(tries, prop_positive_words)) + 
   geom_bar(stat = "identity", fill = "#32a852") + 
-  labs(title = "Proportion of positive words used", 
+  labs(title = "Proportion of positive words used in Wordle tweets", 
        caption = "Based on Wordle tweets from @monjalexander's following and followers",
        x = "tries required",
        y = "proportion")+
